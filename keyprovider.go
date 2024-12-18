@@ -3,6 +3,7 @@ package auth
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strings"
 
@@ -68,6 +69,9 @@ func fetchJWKSURL(ctx context.Context, oidcProvider string) (string, error) {
 	wellKnownResponse, err := http.DefaultClient.Do(r)
 	if err != nil {
 		return "", err
+	}
+	if wellKnownResponse.StatusCode != http.StatusOK {
+		return "", fmt.Errorf("unexpected status code %d", wellKnownResponse.StatusCode)
 	}
 	defer wellKnownResponse.Body.Close()
 	var wellKnown struct {
