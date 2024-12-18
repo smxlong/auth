@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"strings"
 
 	"github.com/lestrrat-go/httprc/v3"
 	"github.com/lestrrat-go/jwx/v3/jwk"
@@ -59,7 +60,7 @@ func newKeyProvider(o *middlewareOptions) (keyProvider, error) {
 
 // fetchJWKSURL fetches the JWKS URL from the OIDC provider
 func fetchJWKSURL(ctx context.Context, oidcProvider string) (string, error) {
-	wellKnownURL := oidcProvider + "/.well-known/openid-configuration"
+	wellKnownURL := strings.TrimSuffix(oidcProvider, "/") + "/.well-known/openid-configuration"
 	r, err := http.NewRequestWithContext(ctx, "GET", wellKnownURL, nil)
 	if err != nil {
 		return "", err
